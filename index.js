@@ -79,11 +79,11 @@ async function run() {
     const project = await getProjectDetails(octokit, organization, projectNumber);
     console.log(`Updating project "${project.title}"`);
 
-    const field = project.fields.nodes.find((it) => it.name === fieldName)
-      ?? throw Error(`Field "${fieldName}" not found`);
+    const field = project.fields.nodes.find((it) => it.name === fieldName);
+    if (!field) throw new Error(`Field "${fieldName}" not found`);
 
     const item = project.items.nodes.find((it) => it.name === itemName)
-      ?? throw Error(`Item "${itemName}" not found`);
+    if (!item) throw new Error(`Item "${itemName}" not found`);
 
     console.log(`${project.title} / ${item.title} / ${field.name} = ${value}`);
     await setField(octokit, project.id, item.id, field.id, value);
