@@ -68,7 +68,7 @@ async function run() {
   try {
     const token = core.getInput('token', { required: true });
     const organization = core.getInput('organization', { required: true });
-    const projectNumber = core.getInput('projectNumber', { required: true });
+    const projectNumber = parseInt(core.getInput('projectNumber', { required: true }));
     const itemName = core.getInput('issue', { required: true });
     const fieldName = core.getInput('field', { required: true });
     const value = core.getInput('value', { required: true });
