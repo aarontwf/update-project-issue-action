@@ -32,7 +32,6 @@ const getProjectDetails = async (octokit, organization, projectNumber) => {
       projectNumber: projectNumber,
     },
   );
-  console.log(JSON.stringify(response));
   return response.organization.projectNext;
 };
 
@@ -75,17 +74,17 @@ async function run() {
 
     const octokit = github.getOctokit(token);
 
-    console.log(`Retrieving details for ${organization} project ${projectNumber}`);
+    console.log(`Retrieving details for "${organization}", Project ${projectNumber}`);
     const project = await getProjectDetails(octokit, organization, projectNumber);
     console.log(`Updating project "${project.title}"`);
 
     const field = project.fields.nodes.find((it) => it.name === fieldName);
     if (!field) throw new Error(`Field "${fieldName}" not found`);
 
-    const item = project.items.nodes.find((it) => it.name === itemName)
+    const item = project.items.nodes.find((it) => it.title === itemName)
     if (!item) throw new Error(`Item "${itemName}" not found`);
 
-    console.log(`${project.title} / ${item.title} / ${field.name} = ${value}`);
+    console.log(`Setting ${project.title} / ${item.title} / ${field.name} = ${value}`);
     await setField(octokit, project.id, item.id, field.id, value);
     console.log('Field updated!');
   } catch (error) {
