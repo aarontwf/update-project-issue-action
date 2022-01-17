@@ -32,6 +32,7 @@ const getProjectDetails = async (octokit, organization, projectNumber) => {
       projectNumber: projectNumber,
     },
   );
+  console.log(JSON.stringify(response));
   return response.data.organization.projectNext;
 };
 
@@ -74,6 +75,7 @@ async function run() {
 
     const octokit = github.getOctokit(token);
 
+    console.log(`Retrieving details for ${organization} project ${projectNumber}`);
     const project = await getProjectDetails(octokit, organization, projectNumber);
     console.log(`Updating project "${project.title}"`);
 
