@@ -8527,8 +8527,8 @@ const setField = async (octokit, projectId, itemId, fieldId, fieldValue) => {
     {
       project: projectId,
       item: itemId,
-      fieldId: fieldId,
-      fieldValue: fieldValue
+      field: fieldId,
+      value: fieldValue
     },
   );
 };
@@ -8555,6 +8555,7 @@ async function run() {
     if (!item) throw new Error(`Item "${itemName}" not found`);
 
     console.log(`Setting ${project.title} / ${item.title} / ${field.name} = ${value}`);
+    console.log(`${project.id} / ${item.id} / ${field.id} = ${value}`);
     await setField(octokit, project.id, item.id, field.id, value);
     console.log('Field updated!');
   } catch (error) {
