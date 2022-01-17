@@ -1,24 +1,50 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-async function run() {
-  try {
-    const token = core.getInput('token');
-    const projectId = core.getInput('projectId');
-    const issueId = core.getInput('issueId');
-    const fieldId = core.getInput('fieldId');
-    const value = core.getInput('value');
+const getProjectDetails = async (octokit, organization, projectNumber) => {
+  const response = await octokit.graphql(
+    `
+      query($organization: String!, $projectNumber: Int!) {
+        organization(login: $organization) {
+          projectNext(number: $projectNumber) {
+            id
+            title
 
-    const octokit = github.getOctokit(token);
-    await octokit.graphql(
-      `
-      mutation ($project: ID!, $item: ID!, $fieldId: ID!, $fieldValue: String!) {
+            fields(first: 50) {
+              nodes {
+                id
+                name
+              }
+            }
+            
+            items(first: 50) {
+              nodes {
+                id
+                title
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      organization: organization,
+      projectNumber: projectNumber,
+    },
+  );
+  return response.data.organization.projectNext;
+};
+
+const setField = async (octokit, projectId, itemId, fieldId, fieldValue) => {
+  await octokit.graphql(
+    `
+      mutation ($project: ID!, $item: ID!, $field: ID!, $value: String!) {
         updateProjectNextItemField(
           input: {
             projectId: $project
             itemId: $item
-            fieldId: $fieldId
-            value: $fieldValue
+            fieldId: $field
+            value: $value
           }
         )
         {
@@ -28,13 +54,38 @@ async function run() {
         }
       }
     `,
-      {
-        project: projectId,
-        item: issueId,
-        fieldId: fieldId,
-        fieldValue: value
-      },
-    );
+    {
+      project: projectId,
+      item: itemId,
+      fieldId: fieldId,
+      fieldValue: fieldValue
+    },
+  );
+};
+
+async function run() {
+  try {
+    const token = core.getInput('token');
+    const organization = core.getInput('organization');
+    const projectNumber = core.getInput('projectNumber');
+    const itemName = core.getInput('issue');
+    const fieldName = core.getInput('field');
+    const value = core.getInput('value');
+
+    const octokit = github.getOctokit(token);
+
+    const project = await getProjectDetails(octokit, organization, projectNumber);
+    console.log(`Updating project "${project.title}"`);
+
+    const field = project.fields.nodes.find((it) => it.name === fieldName)
+      ?? throw Error(`Field "${fieldName}" not found`);
+
+    const item = project.items.nodes.find((it) => it.name === itemName)
+      ?? throw Error(`Item "${itemName}" not found`);
+
+    console.log(`${project.title} / ${item.title} / ${field.name} = ${value}`);
+    await setField(octokit, project.id, item.id, field.id, value);
+    console.log('Field updated!');
   } catch (error) {
     core.setFailed(error.message);
   }

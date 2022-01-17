@@ -4,14 +4,17 @@ inputs:
   token:
     description: 'Token with auth to edit the given project'
     required: true
-  projectId:
-    description: 'Project UUID'
+  orgnaization:
+    description: 'Organization slug'
     required: true
-  issueId:
-    description: 'Issue UUID'
+  projectNumber:
+    description: 'Project number, i.e. 2'
     required: true
-  fieldId:
-    description: 'Field id to update'
+  issue:
+    description: 'Name of the issue to update'
+    required: true
+  field:
+    description: 'Name of the field to update'
     required: true
   value:
     description: 'New field value'
