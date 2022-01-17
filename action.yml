@@ -4,7 +4,7 @@ inputs:
   token:
     description: 'Token with auth to edit the given project'
     required: true
-  orgnaization:
+  organization:
     description: 'Organization slug'
     required: true
   projectNumber:

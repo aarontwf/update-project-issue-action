@@ -65,12 +65,12 @@ const setField = async (octokit, projectId, itemId, fieldId, fieldValue) => {
 
 async function run() {
   try {
-    const token = core.getInput('token');
-    const organization = core.getInput('organization');
-    const projectNumber = core.getInput('projectNumber');
-    const itemName = core.getInput('issue');
-    const fieldName = core.getInput('field');
-    const value = core.getInput('value');
+    const token = core.getInput('token', { required: true });
+    const organization = core.getInput('organization', { required: true });
+    const projectNumber = core.getInput('projectNumber', { required: true });
+    const itemName = core.getInput('issue', { required: true });
+    const fieldName = core.getInput('field', { required: true });
+    const value = core.getInput('value', { required: true });
 
     const octokit = github.getOctokit(token);
 
