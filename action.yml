@@ -1,0 +1,22 @@
+name: 'Update Project Issue Field'
+description: 'Update a field on a Projects (Beta) issue'
+inputs:
+  token:
+    description: 'Token with auth to edit the given project'
+    required: true
+  projectId:
+    description: 'Project UUID'
+    required: true
+  issueId:
+    description: 'Issue UUID'
+    required: true
+  fieldId:
+    description: 'Field id to update'
+    required: true
+  value:
+    description: 'New field value'
+    required: true
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
