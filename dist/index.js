@@ -8503,7 +8503,7 @@ const getProjectDetails = async (octokit, organization, projectNumber) => {
     },
   );
   console.log(JSON.stringify(response));
-  return response.data.organization.projectNext;
+  return response.organization.projectNext;
 };
 
 const setField = async (octokit, projectId, itemId, fieldId, fieldValue) => {
